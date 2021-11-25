@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            background: #f3c36c;
+            padding: 10px;
+        }
+
+        .book-table,
+        .checked-out-books-table {
+            border-collapse: collapse;
+            width: 100%;
+            display: flex;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        .form-container {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            left: 41%;
+        }
+
+        .form {
+            font-size: 14pt;
+            margin-top: 50px;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        .form-name {
+            font-size: 14pt;
+            padding: 4px 2px;
+        }
+
+        .btn {
+            margin-top: 15px;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14pt;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body>
+
+<h2>Welcome to our library!</h2>
+<table class="book-table">
+    <tr class="headers">
+        <th>Id</th>
+        <th>Book name</th>
+        <th>Date added</th>
+        <th>Available</th>
+    </tr>
+</table>
+
+<table class="checked-out-books-table">
+    <tr class="headers">
+        <th>Id</th>
+        <th>Book name</th>
+        <th>Date added</th>
+        <th>Available</th>
+    </tr>
+</table>
+
+<div class="form-container">
+    <form class="form" method="POST" action="#">
+        <label for="id">Enter name: </label>
+        <input type="text" class="form-name" id="id"/>
+        <br/>
+        <button type="submit" class="btn">Create</button>
+    </form>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/books",
+            success: function (data) {
+                for (let datum of data) {
+                    var d = new Date(datum.dateAdded);
+                    var formattedDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                    var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                    var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                    var formattedTime = hours + ":" + minutes;
+
+                    formattedDate = formattedDate + " " + formattedTime;
+                    let bookElement = $(`
+                            <tr>
+                                <td>${datum.id}</td>
+                                <td>${datum.name}</td>
+                                <td>${formattedDate}</td>
+                                <td>${datum.available ? "true" : "false"}</td>
+                            </tr>
+                           `)
+                    $(".book-table").append(bookElement);
+                }
+            },
+            error: function (e) {
+                window.location.href = "error";
+                console.log("ERROR : ", e);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/checked-out-books",
+            success: function (data) {
+                for (let datum of data) {
+                    var d = new Date(datum.dateAdded);
+                    var formattedDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                    var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                    var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                    var formattedTime = hours + ":" + minutes;
+
+                    formattedDate = formattedDate + " " + formattedTime;
+                    let bookElement = $(`
+                            <tr>
+                                <td>${datum.id}</td>
+                                <td>${datum.name}</td>
+                                <td>${formattedDate}</td>
+                                <td>${datum.available ? "true" : "false"}</td>
+                            </tr>
+                           `)
+                    $(".checked-out-books-table").append(bookElement);
+                }
+            },
+            error: function (e) {
+                window.location.href = "error";
+                console.log("ERROR : ", e);
+            }
+        });
+
+        $(".form").submit(function (event) {
+            var formData = {
+                name: $(".form-name").val(),
+            };
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "api/books",
+                data: formData,
+                success: function (datum) {
+                        var d = new Date(datum.dateAdded);
+                        var formattedDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                        var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                        var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                        var formattedTime = hours + ":" + minutes;
+
+                        formattedDate = formattedDate + " " + formattedTime;
+                        let bookElement = $(`
+                            <tr>
+                                <td>${datum.id}</td>
+                                <td>${datum.name}</td>
+                                <td>${formattedDate}</td>
+                                <td>${datum.available ? "true" : "false"}</td>
+                            </tr>
+                           `);
+                        $(".book-table tbody").append(bookElement);
+                        $(".form-name").val('');
+                },
+                error: function (e) {
+                    window.location.href = "error";
+                    console.log("ERROR : ", e);
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

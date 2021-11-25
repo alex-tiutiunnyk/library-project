@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error page</title>
+    <style>
+        a {
+            color: #bb5005;
+            font-size: 16pt;
+        }
+
+        div {
+            display: flex;
+            justify-content: center;
+        }
+
+        h2 {
+            font-family: Verdana, sans-serif;
+            font-size: 18pt;
+            margin-right: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h2>You have an error!</h2>
+<h3 th:text="${error}"></h3>
+<div><a href="/home">Return home</a></div>
+</body>
+</html>
