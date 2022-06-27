@@ -10,13 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Book {
+public class License {
   private int id;
-  private String name;
-  private Timestamp dateAdded;
-  private boolean available;
+  private String licenseKey;
+  private Timestamp dateCreated;
 
-  public void setIsAvailable(boolean isAvailable) {
-    available = isAvailable;
-  }
+
 }

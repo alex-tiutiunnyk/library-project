@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="ISO-8859-1">
@@ -43,33 +43,75 @@
             left: 41%;
         }
 
+        .delete-form-container {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            left: 41%;
+        }
+
+        .preview-btn-container {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            margin-top: 110px;
+            left: 41%;
+        }
+
+        .preview-text {
+            width: 350px;
+            height: 250px;
+            margin-top: 10px;
+            text-decoration: brown;
+        }
+
         .form {
             font-size: 14pt;
             margin-top: 50px;
+        }
+
+        .delete-form {
+            font-size: 14pt;
+            margin-top: 150px;
+        }
+
+        .preview-form {
+            font-size: 14pt;
+            margin-top: 150px;
         }
 
         label {
             font-weight: 600;
         }
 
-        .form-name {
+        .form-name,
+        .form-name2 {
             font-size: 14pt;
             padding: 4px 2px;
         }
 
         .btn {
-            margin-top: 15px;
             cursor: pointer;
             padding: 4px;
             font-size: 14pt;
+        }
+
+        .license {
+            margin-top: 15px;
+            font-weight: bolder;
+            display: flex;
+            justify-content: center;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
 
 <body>
-
 <h2>Welcome to our library!</h2>
+
+<div>
+    <p class="license"></p>
+</div>
 <table class="book-table">
     <tr class="headers">
         <th>Id</th>
@@ -89,16 +131,43 @@
 </table>
 
 <div class="form-container">
-    <form class="form" method="POST" action="#">
-        <label for="id">Enter name: </label>
-        <input type="text" class="form-name" id="id"/>
+    <form action="#" class="form" method="POST">
+        <label for="id">Enter name to create: </label>
+        <input class="form-name" id="id" type="text"/>
         <br/>
-        <button type="submit" class="btn">Create</button>
+        <button class="btn" type="submit">Create</button>
     </form>
 </div>
 <script type="text/javascript">
 
     $(document).ready(function () {
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/license/check",
+            success: function (data) {
+                if (data === false) {
+                    alert('You are not licensed')
+                    window.location.href = "error";
+                }
+            },
+            error: function (e) {
+                window.location.href = "error";
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/license",
+            success: function (data) {
+                $(".license").append('License info: ' + Math.abs(data) + ' days left')
+            },
+            error: function (e) {
+                window.location.href = "error";
+            }
+        });
 
         $.ajax({
             type: "GET",
@@ -126,7 +195,6 @@
             },
             error: function (e) {
                 window.location.href = "error";
-                console.log("ERROR : ", e);
             }
         });
 
@@ -156,7 +224,6 @@
             },
             error: function (e) {
                 window.location.href = "error";
-                console.log("ERROR : ", e);
             }
         });
 
@@ -170,14 +237,14 @@
                 url: "api/books",
                 data: formData,
                 success: function (datum) {
-                        var d = new Date(datum.dateAdded);
-                        var formattedDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
-                        var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
-                        var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
-                        var formattedTime = hours + ":" + minutes;
+                    var d = new Date(datum.dateAdded);
+                    var formattedDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+                    var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                    var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                    var formattedTime = hours + ":" + minutes;
 
-                        formattedDate = formattedDate + " " + formattedTime;
-                        let bookElement = $(`
+                    formattedDate = formattedDate + " " + formattedTime;
+                    let bookElement = $(`
                             <tr>
                                 <td>${datum.id}</td>
                                 <td>${datum.name}</td>
@@ -185,12 +252,61 @@
                                 <td>${datum.available ? "true" : "false"}</td>
                             </tr>
                            `);
-                        $(".book-table tbody").append(bookElement);
-                        $(".form-name").val('');
+                    $(".book-table tbody").append(bookElement);
+                    $(".form-name").val('');
                 },
                 error: function (e) {
                     window.location.href = "error";
-                    console.log("ERROR : ", e);
+                }
+            });
+        });
+    });
+</script>
+
+<div class="delete-form-container">
+    <form action="#" class="delete-form" method="GET">
+        <label for="id2">Book id to delete: </label>
+        <input class="form-name2" id="id2" type="text"/>
+        <br/>
+        <button class="btn" type="submit">Delete</button>
+    </form>
+</div>
+
+<div class="preview-btn-container">
+    <form action="#" class="preview-form" method="GET">
+        <button class="btn" type="submit">Read a preview</button>
+    </form>
+    <p class="preview-text"></p>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".delete-form").submit(function (event) {
+            var deleteId = {
+                name: $(".form-name2").val(),
+            };
+            event.preventDefault();
+            $.ajax({
+                type: "DELETE",
+                url: "api/books/" + deleteId.name,
+                success: function (res) {
+                    $(".form-name2").val('');
+                },
+                error: function (e) {
+                    window.location.href = "error";
+                }
+            });
+        });
+        $(".preview-form").submit(function (event) {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: "/api/preview",
+                success: function (data) {
+                    $(".preview-text").append(data)
+                },
+                error: function (e) {
+                    window.location.href = "error";
                 }
             });
         });
