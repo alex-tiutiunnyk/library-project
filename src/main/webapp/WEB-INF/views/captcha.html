@@ -81,8 +81,7 @@
                 $(".captcha").prepend(img)
             },
             error: function (e) {
-                console.log(e)
-                // window.location.href = "error";
+                window.location.href = "error";
             }
         });
 
@@ -92,19 +91,27 @@
                 case '1.png':
                     if (str === 'a861') {
                         window.location.href = "home";
-                    } else alert('Your answer is not correct! Try again')
+                    } else {
+                        alert('Your answer is not correct! Try again')
+                        location.reload();
+                    }
                     break;
                 case '2.png':
                     if (str === 'dsjcbka') {
                         window.location.href = "home";
-                    } else alert('Your answer is not correct!')
+                    } else {
+                        alert('Your answer is not correct! Try again')
+                        location.reload();
+                    }
                     break;
                 case '3.png':
                     if (str === 'SVDZ' || str === 'svdz') {
                         window.location.href = "home";
-                    } else alert('Your answer is not correct!')
+                    } else {
+                        alert('Your answer is not correct! Try again')
+                        location.reload();
+                    }
             }
-            location.reload();
         });
 
     });
