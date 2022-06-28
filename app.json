@@ -1,8 +1,0 @@
-{
-  "name": "simple-spring-heroku-app",
-  "buildpacks": [
-    {
-      "url": "heroku/maven"
-    }
-  ]
-}
