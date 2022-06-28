@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Captcha</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            background: #f3c36c;
+            padding: 10px;
+        }
+
+        .form-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form {
+            font-size: 14pt;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        .myInput {
+            font-size: 14pt;
+            padding: 4px 2px;
+        }
+
+        .checkBtn {
+            margin-top: 10px;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14pt;
+        }
+
+        .captcha {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>Please pass the Captcha check</h2>
+<div class="captcha"></div>
+
+
+<div class="form-container">
+    <form class="form" method="POST">
+        <label for="id">Enter your answer: </label>
+        <input class="myInput" id="id" type="text"/>
+        <br/>
+        <button class="checkBtn" type="button">Create</button>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let fileName;
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/captcha",
+            success: function (data) {
+                let img = document.createElement("img")
+                img.src = "../resources/" + data
+                img.id = "theImg"
+                fileName = data
+                $(".captcha").prepend(img)
+            },
+            error: function (e) {
+                console.log(e)
+                // window.location.href = "error";
+            }
+        });
+
+        $(".checkBtn").click(function () {
+            var str = $(".myInput").val();
+            switch (fileName) {
+                case '1.png':
+                    if (str === 'a861') {
+                        window.location.href = "home";
+                    } else alert('Your answer is not correct! Try again')
+                    break;
+                case '2.png':
+                    if (str === 'dsjcbka') {
+                        window.location.href = "home";
+                    } else alert('Your answer is not correct!')
+                    break;
+                case '3.png':
+                    if (str === 'SVDZ' || str === 'svdz') {
+                        window.location.href = "home";
+                    } else alert('Your answer is not correct!')
+            }
+            $(".myInput").val('');
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -17,4 +17,9 @@ public class HomeController {
   public String errorPage() {
     return "error";
   }
+
+  @GetMapping("/captcha")
+  public String captchaPage() {
+    return "captcha";
+  }
 }

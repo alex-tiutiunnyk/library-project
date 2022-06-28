@@ -36,48 +36,31 @@
             background-color: #dddddd;
         }
 
-        .form-container {
-            display: inline-block;
-            white-space: nowrap;
-            position: absolute;
-            left: 41%;
-        }
-
+        .form-container,
         .delete-form-container {
-            display: inline-block;
-            white-space: nowrap;
-            position: absolute;
-            left: 41%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
         }
 
         .preview-btn-container {
-            display: inline-block;
-            white-space: nowrap;
-            position: absolute;
-            margin-top: 110px;
-            left: 41%;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
         }
 
         .preview-text {
             width: 350px;
             height: 250px;
             margin-top: 10px;
-            text-decoration: brown;
         }
 
-        .form {
-            font-size: 14pt;
-            margin-top: 50px;
-        }
-
-        .delete-form {
-            font-size: 14pt;
-            margin-top: 150px;
-        }
-
+        .form,
+        .delete-form,
         .preview-form {
             font-size: 14pt;
-            margin-top: 150px;
         }
 
         label {
@@ -276,7 +259,9 @@
     <form action="#" class="preview-form" method="GET">
         <button class="btn" type="submit">Read a preview</button>
     </form>
-    <p class="preview-text"></p>
+    <div>
+        <p class="preview-text"></p>
+    </div>
 </div>
 
 <script type="text/javascript">
